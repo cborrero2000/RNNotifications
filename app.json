@@ -35,6 +35,11 @@
           "enableBackgroundRemoteNotifications": false
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2428f91e-9a31-4bbf-81be-a65023e1548f"
+      }
+    }
   }
 }

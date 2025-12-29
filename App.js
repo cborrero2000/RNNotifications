@@ -16,15 +16,22 @@ Notifications.setNotificationHandler({
 
 export default function App() {
   useEffect(() => {
+    console.log("App.js - useEffect - configurePushNotifications");
     async function configurePushNotifications() {
       const { status } = await Notifications.getPermissionsAsync();
       let finalStatus = status;
-
+      console.log("App.js - useEffect - configurePushNotifications2");
       if (finalStatus !== "granted") {
+        console.log(
+          "App.js - useEffect - configurePushNotifications2.5 NOT GRANTED"
+        );
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
-
+      console.log(
+        "App.js - useEffect - configurePushNotifications3 finalStatus:",
+        finalStatus
+      );
       if (finalStatus !== "granted") {
         Alert.alert(
           "Permission required",
@@ -32,8 +39,14 @@ export default function App() {
         );
         return;
       }
-
-      const pushTokenData = await Notifications.getExpoPushTokenAsync();
+      console.log("App.js - useEffect - getExpoPushTokenAsync1:");
+      const pushTokenData = await Notifications.getExpoPushTokenAsync({
+        projectId: "2428f91e-9a31-4bbf-81be-a65023e1548f",
+      });
+      console.log(
+        "App.js - useEffect - getExpoPushTokenAsync2 pushTokenData:",
+        pushTokenData
+      );
       console.log("Push token data:", pushTokenData);
 
       if (Platform.OS === "android") {
