@@ -1,11 +1,88 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect } from "react";
+import { Alert, Button, StyleSheet, Text, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import * as Notifications from "expo-notifications";
+
+// First, set the handler that will cause the notification
+// to show the alert
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 export default function App() {
+  useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log("Notification received!");
+        console.log(notification);
+      }
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const permissionsHandler = async () => {
+    const settings = await Notifications.getPermissionsAsync();
+
+    const isGranted = settings.granted;
+    if (isGranted) {
+      Alert.alert(
+        "Permission has already been granted!",
+        "You can receive notifications"
+      );
+    } else {
+      const request = await Notifications.requestPermissionsAsync();
+
+      if (request.granted) {
+        Alert.alert(
+          "You have granted permissions",
+          "You can now receive notifications"
+        );
+      } else {
+        Alert.alert(
+          "You did not grant permissions",
+          "You will be unable to receive notifications"
+        );
+      }
+    }
+  };
+  const scheduleNotificationHandler = () => {
+    const triggerTime = new Date(Date.now() + 5000); // 5 seconds from now
+
+    // Second, call scheduleNotificationAsync()
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Look at that notification",
+        body: "I'm so proud of myself Wow!",
+        data: { userName: "Max" },
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 5,
+      },
+    });
+  };
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
       <StatusBar style="auto" />
+      <View style={{ marginBottom: 20 }}>
+        <Button
+          style={styles.pressed}
+          title="Permissions"
+          onPress={permissionsHandler}
+        />
+      </View>
+      <Button
+        title="Schedule Notification"
+        onPress={scheduleNotificationHandler}
+      />
     </View>
   );
 }
@@ -13,8 +90,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
+  pressed: { opacity: 1.0 },
 });
