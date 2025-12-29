@@ -20,6 +20,11 @@ export default function App() {
       (notification) => {
         console.log("Notification received!");
         console.log(notification);
+        const userName = notification.request.content.data.userName;
+        Alert.alert(
+          "Notification!",
+          `Hello ${userName}, you have a new message.`
+        );
       }
     );
 
