@@ -129,6 +129,27 @@ export default function App() {
       },
     });
   };
+
+  function sendPushNotificationHandler() {
+    // Replace with your actual Expo push token
+    const expoPushToken = "ExponentPushToken[cWMAJ0FXDSk6lViW4Jl6jR]";
+
+    fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: expoPushToken,
+        title: "Test - Sent from a Device Push Notification",
+        body: "This is a test push notification sent from the app!",
+        data: { userName: "Max" },
+      }),
+    });
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -143,6 +164,11 @@ export default function App() {
         title="Schedule Notification"
         onPress={scheduleNotificationHandler}
       />
+
+      <Button
+        title="Send Push Notification"
+        onPress={sendPushNotificationHandler}
+      ></Button>
     </View>
   );
 }
